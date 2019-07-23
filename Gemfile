@@ -28,7 +28,7 @@ gem 'friendly_id'
 gem 'komponent'
 
 gem 'activerecord-import'
-gem 'rest-client'
+gem 'httparty'
 gem 'rubyzip'
 
 group :development, :test do
