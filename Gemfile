@@ -25,9 +25,15 @@ gem 'sidekiq-failures'
 gem 'friendly_id'
 gem 'komponent'
 
+gem 'activerecord-import'
+gem 'rest-client'
+gem 'rubyzip'
+
 group :development, :test do
   gem 'pry-byebug'
   gem 'pry-rails'
+  gem 'rspec-rails'
+  gem 'rspec-block_is_expected'
 end
 
 group :development do
