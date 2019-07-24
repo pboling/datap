@@ -1,2 +1,3 @@
-class PageView < ApplicationRecord
+class PageView < Sequel::Model
+
 end

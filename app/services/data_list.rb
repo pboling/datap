@@ -28,13 +28,12 @@ class DataList
     # each hash will have keys like the attributes of SampleEntry
     def seeder(size:, first_date:, min_sequential_days:)
       top_domains = AlexaTopDomains.new(size: size)
-      data_list = self.new(
+      self.new(
           urls: top_domains.domains,
           size: size,
           first_date: first_date,
           min_sequential_days: min_sequential_days
       )
-      data_list.to_a
     end
   end
 
@@ -52,8 +51,12 @@ class DataList
     fill_sample_entries
   end
 
-  def to_a
-    sample_entries.map(&:to_h)
+  def each
+    return enum_for(:each) unless block_given?
+
+    sample_entries.each do |entry|
+      yield entry.to_a
+    end
   end
 
   private

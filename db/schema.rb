@@ -1,26 +1,23 @@
-# This file is auto-generated from the current state of the database. Instead
-# of editing this file, please use the migrations feature of Active Record to
-# incrementally modify your database, and then regenerate this schema definition.
-#
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
-#
-# It's strongly recommended that you check this file into your version control system.
-
-ActiveRecord::Schema.define(version: 2019_07_24_022440) do
-
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
-  create_table "page_views", force: :cascade do |t|
-    t.string "url"
-    t.string "referrer"
-    t.string "digest"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+Sequel.migration do
+  change do
+    create_table(:page_views) do
+      primary_key :id
+      column :url, "text"
+      column :referrer, "text"
+      column :digest, "text"
+      column :created_at, "timestamp without time zone"
+    end
+    
+    create_table(:schema_migrations) do
+      column :filename, "text", :null=>false
+      
+      primary_key [:filename]
+    end
   end
-
+end
+Sequel.migration do
+  change do
+    self << "SET search_path TO \"$user\", public"
+    self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20190724054917_create_page_views.rb')"
+  end
 end

@@ -1,21 +1,17 @@
 # frozen_string_literal: true
 
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+seed_size = ENV['SEED_SIZE'] ? ENV['SEED_SIZE'].to_i : 1_000_000
 
 data_list = DataList.seeder(
-    size: 50,
-    first_date: Time.now,
-    min_sequential_days: 30
+  size: seed_size,
+  first_date: Time.now,
+  min_sequential_days: 30
 )
 
-PageView.import(
-  DataList::COLUMNS,
-  data_list.to_a,
-  validate: false
-)
+data_list.each.each_slice(100) do |list|
+  PageView.import(
+    DataList::COLUMNS,
+    list,
+    validate: false
+  )
+end
