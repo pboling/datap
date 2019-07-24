@@ -7,12 +7,15 @@ class DataList
       http://developer.apple.com
     ) << nil
   BASE_SITE_URL = 'https://developer.apple.com'
-  COLUMNS = [:id, :url, :referrer, :created_at, :hash]
+  ERROR_PATH = '/error'
+  BAD_URI_PATH = '/lulz'
+  ROOT_PATH = '/'
+  COLUMNS = [:id, :url, :referrer, :created_at, :digest]
   attr_reader :urls, :size, :sample_entries, :first_date, :min_sequential_days
 
   class << self
     # returns an array of hashes
-    # each hash will have the keys
+    # each hash will have keys like the attributes of SampleEntry
     def seeder(size:, first_date:, min_sequential_days:)
       top_domains = AlexaTopDomains.new
       top_domains.fetch
@@ -67,7 +70,9 @@ class DataList
 
   # Use "random" hostname from the Alexa top 1MM as entropy in the data
   def faux_path(url)
-    Addressable::URI.parse(url).hostname.gsub('.', '/')
+    return ROOT_PATH unless url
+    return BAD_URI_PATH unless (uri = Addressable::URI.parse(url))
+    uri.hostname.try(:gsub, '.', '/') || ERROR_PATH
   end
 
   # A majority of entries should have referrers

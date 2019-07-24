@@ -1,11 +1,11 @@
 class SampleEntry
-  attr_reader :id, :url, :referrer, :created_at, :hash
+  attr_reader :id, :url, :referrer, :created_at, :digest
   def initialize(url:, referrer:, index:, first_date:, min_sequential_days: 10)
     @id = index
     @url = url
     @referrer = referrer
     @created_at = random_time_of_day(first_date + index.modulo(min_sequential_days).days)
-    @hash = to_digest
+    @digest = to_digest
   end
 
   def to_h
@@ -14,7 +14,7 @@ class SampleEntry
       url: url,
       referrer: referrer,
       created_at: created_at,
-      hash: hash
+      digest: digest
     }
   end
 

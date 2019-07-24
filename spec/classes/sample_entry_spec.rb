@@ -48,8 +48,8 @@ RSpec.describe SampleEntry do
           is_expected.to be_within(min_sequential_days.days).of(first_date.beginning_of_day)
         end
       end
-      describe 'hash' do
-        subject { instance.hash }
+      describe 'digest' do
+        subject { instance.digest }
         it 'sets' do
           is_expected.to match(/[a-z0-9]+/)
         end

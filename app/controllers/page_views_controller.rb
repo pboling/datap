@@ -69,6 +69,6 @@ class PageViewsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def page_view_params
-      params.require(:page_view).permit(:url, :referrer, :hash, :created_at)
+      params.require(:page_view).permit(:url, :referrer, :digest, :created_at)
     end
 end
