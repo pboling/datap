@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open-uri'
 require 'zip'
 
@@ -31,7 +33,7 @@ class AlexaTopDomains
 
   def extract(zipped)
     unzipped = unzip(zipped)
-    write(unzipped["top-1m.csv"])
+    write(unzipped['top-1m.csv'])
   end
 
   def each
@@ -47,7 +49,7 @@ class AlexaTopDomains
   end
 
   def write(unzipped)
-    all = unzipped.split.map { |l| l.split(",")[1] }
+    all = unzipped.split.map { |l| l.split(',')[1] }
     File.open(FILEPATH, 'w') do |file|
       file.puts all.join("\n")
     end

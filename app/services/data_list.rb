@@ -1,26 +1,28 @@
+# frozen_string_literal: true
+
 # We need a list of exactly one million entries
 class DataList
-  CORE_REFERRERS = %w(
-      http://apple.com
-      https://apple.com
-      https://www.apple.com
-      http://developer.apple.com
-    )
-  CORE_URLS = %w(
+  CORE_REFERRERS = %w[
+    http://apple.com
+    https://apple.com
+    https://www.apple.com
+    http://developer.apple.com
+  ].freeze
+  CORE_URLS = %w[
     http://apple.com
     https://apple.com
     https://www.apple.com
     http://developer.apple.com
     http://en.wikipedia.org
     http://opensource.org
-  )
+  ].freeze
   REQUIRED_REFERRERS = CORE_REFERRERS << nil
   BASE_SITE_URL = 'https://developer.apple.com'
   ERROR_PATH = '/error'
   BAD_URI_PATH = '/lulz'
   ROOT_PATH = '/'
   MINIMUM_LIST_SIZE = 10
-  COLUMNS = [:id, :url, :referrer, :created_at, :digest]
+  COLUMNS = %i[id url referrer created_at digest].freeze
   attr_reader :urls, :size, :sample_entries, :first_date, :sequential_days
 
   class << self
@@ -29,11 +31,11 @@ class DataList
     def seeder(size:, first_date:, sequential_days:)
       top_domains = AlexaTopDomains.new(size: size)
       puts "Have #{top_domains.num + 1} Domains"
-      self.new(
-          urls: top_domains.domains,
-          size: size,
-          first_date: first_date,
-          sequential_days: sequential_days
+      new(
+        urls: top_domains.domains,
+        size: size,
+        first_date: first_date,
+        sequential_days: sequential_days
       )
     end
   end
@@ -138,11 +140,11 @@ class DataList
   def fill_to_exactly_size
     num_missing_domains = size - urls.length
     case num_missing_domains <=> 0
-    when -1 then # LT, i.e. there are too many
+    when -1 # LT, i.e. there are too many
       urls.pop(-num_missing_domains)
-    when 0 then # EQ
+    when 0 # EQ
       puts "Perfectly #{size}"
-    when 1 then # GT, i.e. there are not enough
+    when 1 # GT, i.e. there are not enough
       while (rem = size - urls.length).positive?
         urls.concat(urls.sample(rem))
       end

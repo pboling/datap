@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class PageViewsController < ApplicationController
-  before_action :set_page_view, only: [:show, :edit, :update, :destroy]
+  before_action :set_page_view, only: %i[show edit update destroy]
 
   # GET /page_views
   # GET /page_views.json
@@ -9,8 +11,7 @@ class PageViewsController < ApplicationController
 
   # GET /page_views/1
   # GET /page_views/1.json
-  def show
-  end
+  def show; end
 
   # GET /page_views/new
   def new
@@ -18,8 +19,7 @@ class PageViewsController < ApplicationController
   end
 
   # GET /page_views/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /page_views
   # POST /page_views.json
@@ -62,13 +62,14 @@ class PageViewsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_page_view
-      @page_view = PageView.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def page_view_params
-      params.require(:page_view).permit(:url, :referrer, :digest, :created_at)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_page_view
+    @page_view = PageView.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def page_view_params
+    params.require(:page_view).permit(:url, :referrer, :digest, :created_at)
+  end
 end

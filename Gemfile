@@ -27,11 +27,11 @@ gem 'sidekiq-failures'
 gem 'friendly_id'
 gem 'komponent'
 
+gem 'addressable'
+gem 'colorize', require: false
 gem 'httparty'
 gem 'rubyzip'
-gem 'addressable'
 gem 'sequel-rails'
-gem 'colorize', require: false
 
 group :development, :test do
   gem 'pry-byebug'

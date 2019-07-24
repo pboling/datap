@@ -5,12 +5,12 @@ require 'benchmark'
 
 BENCHMARK_MARKER = ColorizedString['------ BENCHMARK'].green.on_black
 
-def bench(task_name, &block)
+def bench(task_name)
   puts "\n#{BENCHMARK_MARKER}-START: #{ColorizedString[task_name].green.on_black}\n"
   seconds = Benchmark.realtime do
     yield if block_given?
   end
-  puts "\n#{BENCHMARK_MARKER}-FINISH: #{ColorizedString[task_name].green.on_black} #{ColorizedString[sprintf("%f", seconds)].yellow.on_black} seconds\n"
+  puts "\n#{BENCHMARK_MARKER}-FINISH: #{ColorizedString[task_name].green.on_black} #{ColorizedString[format('%f', seconds)].yellow.on_black} seconds\n"
 end
 
 seed_size = ENV['SEED_SIZE'] ? ENV['SEED_SIZE'].to_i : 1_000_000
@@ -32,9 +32,9 @@ bench("Importing #{seed_size} PageViews") do
   puts "Each '#{red_dot}' represents 10,000\n"
   data_list.each.each_slice(slice_size) do |list|
     PageView.import(
-        DataList::COLUMNS,
-        list,
-        validate: false
+      DataList::COLUMNS,
+      list,
+      validate: false
     )
     print red_dot
   end
