@@ -66,13 +66,13 @@ RSpec.describe DataList do
   describe '.seeder' do
     let(:first_date) { Time.now }
     let(:min_sequential_days) { 17 }
-    subject { described_class.seeder(size: size, first_date: first_date, min_sequential_days: min_sequential_days) }
+    subject(:instance) { described_class.seeder(size: size, first_date: first_date, min_sequential_days: min_sequential_days) }
     it 'returns an array' do
       is_expected.to be_an(Array)
     end
     context 'length' do
       let(:size) { 149 }
-      subject { instance.to_a.length }
+      subject { instance.length }
       it 'is size' do
         is_expected.to eq(size)
       end
