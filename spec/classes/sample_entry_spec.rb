@@ -3,14 +3,14 @@ RSpec.describe SampleEntry do
   let(:referrer) { 'https://www.apple.com' }
   let(:index) { 325 }
   let(:first_date) { Time.now }
-  let(:min_sequential_days) { 2 }
+  let(:sequential_days) { 2 }
   let(:instance) do
     described_class.new(
       url: url,
       referrer: referrer,
       index: index,
       first_date: first_date,
-      min_sequential_days: min_sequential_days
+      sequential_days: sequential_days
     )
   end
   describe '#initialize' do
@@ -45,7 +45,7 @@ RSpec.describe SampleEntry do
           is_expected.to be_a(Time)
         end
         it 'is within sequential days' do
-          is_expected.to be_within(min_sequential_days.days).of(first_date.beginning_of_day)
+          is_expected.to be_within(sequential_days.days).of(first_date.beginning_of_day)
         end
       end
       describe 'digest' do

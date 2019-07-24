@@ -21,33 +21,33 @@ class DataList
   ROOT_PATH = '/'
   MINIMUM_LIST_SIZE = 10
   COLUMNS = [:id, :url, :referrer, :created_at, :digest]
-  attr_reader :urls, :size, :sample_entries, :first_date, :min_sequential_days
+  attr_reader :urls, :size, :sample_entries, :first_date, :sequential_days
 
   class << self
     # returns an array of hashes
     # each hash will have keys like the attributes of SampleEntry
-    def seeder(size:, first_date:, min_sequential_days:)
+    def seeder(size:, first_date:, sequential_days:)
       top_domains = AlexaTopDomains.new(size: size)
       puts "Have #{top_domains.num + 1} Domains"
       self.new(
           urls: top_domains.domains,
           size: size,
           first_date: first_date,
-          min_sequential_days: min_sequential_days
+          sequential_days: sequential_days
       )
     end
   end
 
-  def initialize(urls:, size:, first_date: nil, min_sequential_days: MINIMUM_LIST_SIZE)
+  def initialize(urls:, size:, first_date: nil, sequential_days: MINIMUM_LIST_SIZE)
     # Must be at least ten sequential days of data
-    raise 'Minimum min_sequential_days is 10' unless min_sequential_days >= MINIMUM_LIST_SIZE
-    raise "Minimum size is #{min_sequential_days} when min_sequential_days is #{min_sequential_days}" unless size >= min_sequential_days
+    raise 'Minimum sequential_days is 10' unless sequential_days >= MINIMUM_LIST_SIZE
+    raise "Minimum size is #{sequential_days} when sequential_days is #{sequential_days}" unless size >= sequential_days
 
     @urls = urls.to_a
     @size = size
     @sample_entries = []
-    @first_date = first_date || Time.now.beginning_of_day - min_sequential_days
-    @min_sequential_days = min_sequential_days
+    @first_date = first_date || Time.now.beginning_of_day - sequential_days
+    @sequential_days = sequential_days
     fill_to_exactly_size
     fill_sample_entries
   end
@@ -73,7 +73,7 @@ class DataList
         referrer: referrer,
         index: index,
         first_date: first_date,
-        min_sequential_days: min_sequential_days
+        sequential_days: sequential_days
       )
     end
   end

@@ -1,11 +1,11 @@
 class SampleEntry
   attr_reader :id, :url, :referrer, :created_at, :digest
-  def initialize(url:, referrer:, index:, first_date:, min_sequential_days: 10)
+  def initialize(url:, referrer:, index:, first_date:, sequential_days: 10)
     # index starts at 0, but ID starts at 1
     @id = index + 1
     @url = url
     @referrer = referrer
-    @created_at = random_time_of_day(first_date + index.modulo(min_sequential_days).days)
+    @created_at = random_time_of_day(first_date + index.modulo(sequential_days).days)
     @digest = to_digest
   end
 

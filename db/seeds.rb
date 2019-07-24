@@ -3,11 +3,12 @@
 require 'colorized_string'
 
 seed_size = ENV['SEED_SIZE'] ? ENV['SEED_SIZE'].to_i : 1_000_000
+sequential_days = ENV['SEQ_DAYS'] ? ENV['SEQ_DAYS'].to_i : 30
 
 data_list = DataList.seeder(
   size: seed_size,
   first_date: Time.now,
-  min_sequential_days: 30
+  sequential_days: sequential_days
 )
 
 red_dot = ColorizedString['.'].red.on_blue
