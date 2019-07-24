@@ -1,16 +1,25 @@
 # We need a list of exactly one million entries
 class DataList
-  APPLE_REFERRERS = %w(
+  CORE_REFERRERS = %w(
       http://apple.com
       https://apple.com
       https://www.apple.com
       http://developer.apple.com
     )
-  REQUIRED_REFERRERS = APPLE_REFERRERS << nil
+  CORE_URLS = %w(
+    http://apple.com
+    https://apple.com
+    https://www.apple.com
+    http://developer.apple.com
+    http://en.wikipedia.org
+    http://opensource.org
+  )
+  REQUIRED_REFERRERS = CORE_REFERRERS << nil
   BASE_SITE_URL = 'https://developer.apple.com'
   ERROR_PATH = '/error'
   BAD_URI_PATH = '/lulz'
   ROOT_PATH = '/'
+  MINIMUM_LIST_SIZE = 10
   COLUMNS = [:id, :url, :referrer, :created_at, :digest]
   attr_reader :urls, :size, :sample_entries, :first_date, :min_sequential_days
 
@@ -29,7 +38,11 @@ class DataList
     end
   end
 
-  def initialize(urls:, size:, first_date: nil, min_sequential_days: 10)
+  def initialize(urls:, size:, first_date: nil, min_sequential_days: MINIMUM_LIST_SIZE)
+    # Must be at least ten sequential days of data
+    raise 'Minimum min_sequential_days is 10' unless min_sequential_days >= MINIMUM_LIST_SIZE
+    raise "Minimum size is #{min_sequential_days} when min_sequential_days is #{min_sequential_days}" unless size >= min_sequential_days
+
     @urls = urls.to_a
     @size = size
     @sample_entries = []
@@ -47,11 +60,12 @@ class DataList
 
   def fill_sample_entries
     must_have_referrers = REQUIRED_REFERRERS.dup
-    @urls.each_with_index do |url, index|
-      url = next_url!(url)
-      referrer = next_referrer!(must_have_referrers, url)
+    must_have_urls = CORE_URLS.dup
+    @urls.each_with_index do |top_url, index|
+      visited_url = next_url!(must_have_urls, top_url)
+      referrer = next_referrer!(must_have_referrers, visited_url)
       @sample_entries << SampleEntry.new(
-        url: url,
+        url: visited_url,
         referrer: referrer,
         index: index,
         first_date: first_date,
@@ -60,25 +74,29 @@ class DataList
     end
   end
 
-  def next_referrer!(must_have_referrers, url)
+  def next_referrer!(must_have_referrers, visited_url)
     must_have = must_have_referrers.shift
-    return nil if must_have == url
+    return nil if must_have == visited_url
     return must_have if must_have
     return nil unless has_referrer?
 
     if own_referrer?
-      referrer = APPLE_REFERRERS.sample
+      referrer = CORE_REFERRERS.sample
     else
       scheme = secure_referrer? ? 'https' : 'http'
       referrer = "#{scheme}://#{urls.sample}"
     end
-    return referrer unless referrer == url
+    return referrer unless referrer == visited_url
   end
 
-  def next_url!(url)
-    return BASE_SITE_URL if hit_root?
+  def next_url!(must_have_urls, top_url)
+    must_have = must_have_urls.shift
+    return top_url if must_have == top_url
+    return must_have if must_have
 
-    "#{BASE_SITE_URL}#{faux_path(url)}"
+    return CORE_URLS.sample if hit_core_domain_at_root?
+
+    "#{CORE_URLS.sample}#{faux_path(top_url)}"
   end
 
   # Use "random" hostname from the Alexa top 1MM as entropy in the data
@@ -103,8 +121,8 @@ class DataList
     rand(10) > 3
   end
 
-  # A plurality of entries should be for site root
-  def hit_root?
+  # A plurality of entries should be for root core domain
+  def hit_core_domain_at_root?
     rand(10) < 4
   end
 

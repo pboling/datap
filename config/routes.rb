@@ -2,7 +2,6 @@
 
 Rails.application.routes.draw do
   resources :page_views
-  scope '(:locale)', locale: /fr/ do
-    root to: 'pages#home'
-  end
+  resource :top_urls, only: [:index]
+  resource :top_referrers, only: [:index]
 end
