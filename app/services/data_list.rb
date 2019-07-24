@@ -7,7 +7,24 @@ class DataList
       http://developer.apple.com
     ) << nil
   BASE_SITE_URL = 'https://developer.apple.com'
+  COLUMNS = [:id, :url, :referrer, :created_at, :hash]
   attr_reader :urls, :size, :sample_entries, :first_date, :min_sequential_days
+
+  class << self
+    # returns an array of hashes
+    # each hash will have the keys
+    def seeder(size:, first_date:, min_sequential_days:)
+      top_domains = AlexaTopDomains.new
+      top_domains.fetch
+      data_list = self.new(
+          urls: top_domains.domains,
+          size: size,
+          first_date: first_date,
+          min_sequential_days: min_sequential_days
+      )
+      data_list.to_a
+    end
+  end
 
   def initialize(urls:, size: 1_000_000, first_date: nil, min_sequential_days: 10)
     @urls = urls.dup # array will be modified
@@ -17,6 +34,10 @@ class DataList
     @min_sequential_days = min_sequential_days
     fill_to_exactly_1MM_urls
     fill_sample_entries
+  end
+
+  def to_a
+    sample_entries.map(&:to_h)
   end
 
   private

@@ -8,6 +8,16 @@ class SampleEntry
     @hash = to_digest
   end
 
+  def to_h
+    {
+      id: id,
+      url: url,
+      referrer: referrer,
+      created_at: created_at,
+      hash: hash
+    }
+  end
+
   private
 
   def random_time_of_day(now)

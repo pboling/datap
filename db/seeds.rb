@@ -7,3 +7,15 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+data_list = DataList.seeder(
+    size: 1_000_000,
+    first_date: Time.now,
+    min_sequential_days: 10
+)
+
+PageView.import(
+  DataList::COLUMNS,
+  data_list.to_a,
+  validate: false
+)

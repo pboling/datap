@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Url:</strong>
+  <%= @page_view.url %>
+</p>
+
+<p>
+  <strong>Referrer:</strong>
+  <%= @page_view.referrer %>
+</p>
+
+<p>
+  <strong>Hash:</strong>
+  <%= @page_view.hash %>
+</p>
+
+<p>
+  <strong>Created at:</strong>
+  <%= @page_view.created_at %>
+</p>
+
+<%= link_to 'Edit', edit_page_view_path(@page_view) %> |
+<%= link_to 'Back', page_views_path %>
