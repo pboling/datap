@@ -28,6 +28,7 @@ class DataList
     # each hash will have keys like the attributes of SampleEntry
     def seeder(size:, first_date:, min_sequential_days:)
       top_domains = AlexaTopDomains.new(size: size)
+      puts "Have #{top_domains.num + 1} Domains"
       self.new(
           urls: top_domains.domains,
           size: size,
@@ -86,7 +87,7 @@ class DataList
     if own_referrer?
       referrer = CORE_REFERRERS.sample
     else
-      scheme = secure_referrer? ? 'https' : 'http'
+      scheme = secure_scheme? ? 'https' : 'http'
       referrer = "#{scheme}://#{urls.sample}"
     end
     return referrer unless referrer == visited_url
@@ -105,12 +106,17 @@ class DataList
   # Use "random" hostname from the Alexa top 1MM as entropy in the data
   def faux_path(url)
     return ROOT_PATH unless url
-    return BAD_URI_PATH unless (uri = Addressable::URI.parse(url))
 
-    uri.hostname.try(:gsub, '.', '/') || ERROR_PATH
+    scheme = secure_scheme? ? 'https' : 'http'
+    uri = Addressable::URI.parse("#{scheme}://#{url}")
+    return BAD_URI_PATH unless uri
+
+    hostname = uri.hostname.try(:gsub, '.', '/')
+    hostname = "/#{hostname}" if hostname
+    hostname || ERROR_PATH
   end
 
-  def secure_referrer?
+  def secure_scheme?
     rand(10) < 6
   end
 
@@ -135,6 +141,7 @@ class DataList
     when -1 then # LT, i.e. there are too many
       urls.pop(-num_missing_domains)
     when 0 then # EQ
+      puts "Perfectly #{size}"
     when 1 then # GT, i.e. there are not enough
       while (rem = size - urls.length).positive?
         urls.concat(urls.sample(rem))

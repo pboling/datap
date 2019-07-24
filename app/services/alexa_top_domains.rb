@@ -5,7 +5,7 @@ class AlexaTopDomains
   URL = 'http://s3.amazonaws.com/alexa-static/top-1m.csv.zip'
   FILEPATH = 'db/data/domains.txt'
 
-  attr_reader :domains
+  attr_reader :domains, :num
 
   def initialize(size: nil)
     @domains = as_enum

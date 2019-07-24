@@ -32,6 +32,7 @@ gem 'httparty'
 gem 'rubyzip'
 gem 'addressable'
 gem 'sequel-rails'
+gem 'colorize', require: false
 
 group :development, :test do
   gem 'pry-byebug'
