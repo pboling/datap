@@ -9,9 +9,9 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 data_list = DataList.seeder(
-    size: 1_000_000,
+    size: 50,
     first_date: Time.now,
-    min_sequential_days: 10
+    min_sequential_days: 30
 )
 
 PageView.import(

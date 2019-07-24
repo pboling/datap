@@ -37,10 +37,10 @@ group :development, :test do
   gem 'pry-rails'
   gem 'rspec-block_is_expected'
   gem 'rspec-rails'
-  gem 'rubocop'
-  gem 'rubocop-performance'
-  gem 'rubocop-rails'
-  gem 'rubocop-rspec'
+  gem 'rubocop', require: false
+  gem 'rubocop-performance', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rspec', require: false
 end
 
 group :test do
@@ -60,7 +60,6 @@ group :development do
 
   gem 'brakeman', require: false
   gem 'overcommit'
-  gem 'rubocop', require: false
 
   gem 'guard'
   gem 'guard-bundler', require: false

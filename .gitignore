@@ -34,3 +34,5 @@ yarn-debug.log*
 .yarn-integrity
 
 .overmind.sock
+
+db/data/*.txt
