@@ -30,6 +30,7 @@ gem 'komponent'
 gem 'activerecord-import'
 gem 'httparty'
 gem 'rubyzip'
+gem 'addressable'
 
 group :development, :test do
   gem 'pry-byebug'
@@ -40,6 +41,11 @@ group :development, :test do
   gem 'rubocop-performance'
   gem 'rubocop-rails'
   gem 'rubocop-rspec'
+end
+
+group :test do
+  gem 'vcr'
+  gem 'webmock'
 end
 
 group :development do

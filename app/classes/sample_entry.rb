@@ -1,11 +1,19 @@
 class SampleEntry
   attr_reader :id, :url, :referrer, :created_at, :hash
-  def initialize(url:, referrers:, index:, first_date:, min_sequential_days: 10)
+  def initialize(url:, referrer:, index:, first_date:, min_sequential_days: 10)
     @id = index
     @url = url
-    @referrer = rand(10) > 3 ? referrers.sample(1) : nil
-    @created_at = first_date + index.modulo(min_sequential_days).days
+    @referrer = referrer
+    @created_at = random_time_of_day(first_date + index.modulo(min_sequential_days).days)
     @hash = to_digest
+  end
+
+  private
+
+  def random_time_of_day(now)
+    from = now.strftime("%Y-%m-%dT00:00:00%z")
+    to = now.strftime("%Y-%m-%dT11:59:59%z")
+    rand(Time.parse(from)..Time.parse(to))
   end
 
   def to_digest
