@@ -16,7 +16,7 @@ RSpec.describe AlexaTopDomains do
       #   so as to not offend networks / Amazon / Jeff Bezos
       block_is_expected.to_not raise_error
       expect(instance.domains).to_not be_empty
-      expect(instance.domains.length > 990_000).to be_true
+      expect(instance.domains.length > 990_000).to be true
     end
   end
 end
