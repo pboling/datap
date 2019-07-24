@@ -27,7 +27,6 @@ gem 'sidekiq-failures'
 gem 'friendly_id'
 gem 'komponent'
 
-gem 'sequel-seed'
 gem 'httparty'
 gem 'rubyzip'
 gem 'addressable'
