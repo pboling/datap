@@ -40,7 +40,7 @@ class SampleEntry
         url: url,
         referrer: referrer,
         created_at: created_at
-      }.to_s
+      }.compact!.to_s
     )
   end
 end
