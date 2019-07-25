@@ -26,7 +26,7 @@ RSpec.describe SampleEntry do
       describe 'id' do
         subject { instance.id }
         it 'sets' do
-          is_expected.to eq(index)
+          is_expected.to eq(index + 1)
         end
       end
       describe 'url' do

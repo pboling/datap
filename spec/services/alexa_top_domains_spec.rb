@@ -17,9 +17,21 @@ RSpec.describe AlexaTopDomains do
             is_expected.to be_a(Enumerator)
           end
         end
-        it 'has almost a million domains' do
-          VCR.use_cassette('alexa_top_domains') do
-            expect(instance.domains.size > 990_000).to be true
+        context 'default' do
+          let(:instance) { described_class.new(size: nil) }
+          it 'size is DEFAULT_SIZE' do
+            VCR.use_cassette('alexa_top_domains') do
+              expect(instance.domains.size).to eq(described_class::DEFAULT_SIZE)
+            end
+          end
+        end
+        context 'large' do
+          let(:size) { 1_111_111 }
+          let(:instance) { described_class.new(size: size) }
+          it 'size is large' do
+            VCR.use_cassette('alexa_top_domains') do
+              expect(instance.domains.size).to eq(size)
+            end
           end
         end
       end

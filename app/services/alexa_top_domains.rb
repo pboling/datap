@@ -6,25 +6,19 @@ require 'zip'
 class AlexaTopDomains
   URL = 'http://s3.amazonaws.com/alexa-static/top-1m.csv.zip'
   FILEPATH = 'db/data/domains.txt'
+  DEFAULT_SIZE = 100
 
-  attr_reader :domains, :num
+  attr_reader :domains, :size
 
   def initialize(size: nil)
-    @domains = as_enum
-    @num = size ? size - 1 : -1
+    @size = size || DEFAULT_SIZE
+    @domains = each
   end
 
   private
 
   def cached?
     File.exist?(FILEPATH)
-  end
-
-  def as_enum
-    return each if cached?
-
-    extract(get)
-    each
   end
 
   def get
@@ -37,9 +31,9 @@ class AlexaTopDomains
   end
 
   def each
-    return read.each unless block_given?
+    return fill_to_exactly_size.each unless block_given?
 
-    read[0..(num)].each do |domain|
+    fill_to_exactly_size.each do |domain|
       yield domain
     end
   end
@@ -64,5 +58,10 @@ class AlexaTopDomains
         end
       end
     end
+  end
+
+  def fill_to_exactly_size
+    extract(get) unless cached?
+    ListFiller.new(read, size: size).list
   end
 end

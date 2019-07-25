@@ -3,10 +3,10 @@
 RSpec.describe DataList do
   let(:urls) do
     %w[
-      http://apple.com
-      https://apple.com
-      https://www.apple.com
-      http://developer.apple.com
+      http://mars.com
+      https://venus.com
+      https://jupiter.com
+      http://neptune.com
     ]
   end
   let(:size) { 20 }
@@ -51,14 +51,14 @@ RSpec.describe DataList do
     end
   end
 
-  describe '#to_a' do
-    subject { instance.to_a }
-    it 'returns an array' do
-      is_expected.to be_an(Array)
+  describe '#each' do
+    subject { instance.each }
+    it 'returns an Enumerator' do
+      is_expected.to be_an(Enumerator)
     end
-    context 'length' do
-      let(:size) { 149 }
-      subject { instance.to_a.length }
+    context 'converts to array' do
+      let(:size) { 12 }
+      subject { instance.each.to_a.length }
       it 'is size' do
         is_expected.to eq(size)
       end
@@ -70,11 +70,11 @@ RSpec.describe DataList do
     let(:sequential_days) { 17 }
     subject(:instance) { described_class.seeder(size: size, first_date: first_date, sequential_days: sequential_days) }
     it 'returns an array' do
-      is_expected.to be_an(Array)
+      is_expected.to be_an(described_class)
     end
-    context 'length' do
+    context 'has <size> sample entries' do
       let(:size) { 149 }
-      subject { instance.length }
+      subject { instance.sample_entries.length }
       it 'is size' do
         is_expected.to eq(size)
       end

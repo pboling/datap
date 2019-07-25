@@ -16,7 +16,7 @@ class DataList
     http://en.wikipedia.org
     http://opensource.org
   ].freeze
-  REQUIRED_REFERRERS = CORE_REFERRERS << nil
+  REQUIRED_REFERRERS = CORE_REFERRERS + [nil]
   BASE_SITE_URL = 'https://developer.apple.com'
   ERROR_PATH = '/error'
   BAD_URI_PATH = '/lulz'
@@ -28,9 +28,8 @@ class DataList
   class << self
     # returns an array of hashes
     # each hash will have keys like the attributes of SampleEntry
-    def seeder(size:, first_date:, sequential_days:)
+    def seeder(size:, sequential_days:, first_date: nil)
       top_domains = AlexaTopDomains.new(size: size)
-      puts "Have #{top_domains.num + 1} Domains"
       new(
         urls: top_domains.domains,
         size: size,
@@ -45,12 +44,12 @@ class DataList
     raise 'Minimum sequential_days is 10' unless sequential_days >= MINIMUM_LIST_SIZE
     raise "Minimum size is #{sequential_days} when sequential_days is #{sequential_days}" unless size >= sequential_days
 
-    @urls = urls.to_a
     @size = size
+    @urls = ListFiller.new(urls.to_a, size: @size).list
+    @non_core_referrers = ListEntropy.new(@urls.first(1000), size: 1000, max_entropy: 1000).list
     @sample_entries = []
-    @first_date = first_date || Time.now.beginning_of_day - sequential_days
+    @first_date = first_date || Time.now.beginning_of_day - sequential_days.days
     @sequential_days = sequential_days
-    fill_to_exactly_size
     fill_sample_entries
   end
 
@@ -90,7 +89,7 @@ class DataList
       referrer = CORE_REFERRERS.sample
     else
       scheme = secure_scheme? ? 'https' : 'http'
-      referrer = "#{scheme}://#{urls.sample}"
+      referrer = "#{scheme}://#{@non_core_referrers.sample}"
     end
     return referrer unless referrer == visited_url
   end
@@ -124,32 +123,16 @@ class DataList
 
   # A plurality of referrers should be from the same domain
   def own_referrer?
-    rand(10) < 3
+    rand(10) < 5
   end
 
   # A majority of entries should have referrers
   def has_referrer?
-    rand(10) > 3
+    rand(10) > 2
   end
 
   # A plurality of entries should be for root core domain
   def hit_core_domain_at_root?
     rand(10) < 4
-  end
-
-  def fill_to_exactly_size
-    num_missing_domains = size - urls.length
-    case num_missing_domains <=> 0
-    when -1 # LT, i.e. there are too many
-      urls.pop(-num_missing_domains)
-    when 0 # EQ
-      puts "Perfectly #{size}"
-    when 1 # GT, i.e. there are not enough
-      while (rem = size - urls.length).positive?
-        urls.concat(urls.sample(rem))
-      end
-    else
-      raise 'Unexpected Comparison'
-    end
   end
 end
