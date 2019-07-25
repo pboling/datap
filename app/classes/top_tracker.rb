@@ -1,5 +1,5 @@
 class TopTracker
-  delegate :[], :[]=, to: :@hash
+  delegate :[], :[]=, :keys, :merge, :empty?, :to_h, to: :@hash
 
   def initialize(size)
     @size = size
