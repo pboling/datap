@@ -6,19 +6,22 @@ ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
 # Prevent database truncation if the environment is production
 abort('The Rails environment is running in production mode!') if Rails.env.production?
+
+# Remove the ActiveRecord constant, because it is autloaded by
+# ActiveStorage and not needed for our application. The presence
+# of the ActiveRecord constant causes rspec-rails to include
+# extra fixture support, which results in:
+#
+#   ActiveRecord::ConnectionNotEstablished:
+#     No connection pool with 'primary' found.
+#
+Object.send(:remove_const, :ActiveRecord)
+
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
-require 'vcr'
-require 'webmock/rspec'
-
-debug = ENV['DEBUG'] == 'true'
-
-VCR.configure do |config|
-  config.cassette_library_dir = 'spec/vcr'
-  config.hook_into :webmock
-  config.debug_logger = $stderr if debug
-end
+require 'support/sequel'
+require 'support/vcr'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
