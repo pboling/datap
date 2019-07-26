@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  resources :page_views
-  resource :top_urls, only: [:index]
-  resource :top_referrers, only: [:index]
+  get '/top_urls' => 'top_urls#index'
+  get '/top_referrers' => 'top_referrers#index'
 end
