@@ -1,16 +1,31 @@
 # datap
 
-This is a Rails 5 app created using [modern-rails-template][]. Please check README of the template repository to see the features available out of the box. To have a look to the new features introduced by Rails 5.2 (credentials for example), check this [article][].
-
 ## How to use this project
 
-* We advise you to use [overmind][] to launch your processes in development. You just need to run `overmind s -f Procfile.dev`. Of course, another process manager, like [foreman][], would work too.
-* We advise you to deploy to [Heroku][]. Do not forget to add the [Redis] add-on.
+### Setup
 
-[article]: https://evilmartians.com/chronicles/rails-5-2-active-storage-and-beyond
-[modern-rails-template]: https://github.com/damienlethiec/modern-rails-template
-[here]: http://nvie.com/posts/a-successful-git-branching-model/
+During the `db:reset`, it will seed the database.  This will take a few minutes.
+
+But why does it take so long?
+
+1. It downloads a copy of the Alexa top 1 Million sites (9.3 MB).
+2. These are used to build entropy, so that the dataset is real-ish for both:
+  A. urls being hit, and
+  B. referrers
+3. Building this entropy takes 2-3 minutes, but
+  A. having a data set that is realistic is helpful to notice bugs in data handling, especially with queries.
+4. Importing the 1 million records tends to take around 60-90 seconds.
+
+```bash
+bundle install
+bin/rake db:reset
+RAILS_ENV=test bin/rake db:reset
+bundle exec rspec
+```
+
+### Run
+
+* Use [overmind][] to launch your processes in development. You just need to run
+  - `overmind s -f Procfile.dev`
+
 [overmind]: https://github.com/DarthSim/overmind
-[foreman]: https://github.com/ddollar/foreman
-[heroku]: https://www.heroku.com/
-[redis]: https://devcenter.heroku.com/articles/heroku-redis
