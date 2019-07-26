@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'colorized_string'
+
 # We need a list of exactly one million entries
 class DataList
   CORE_REFERRERS = %w[
@@ -22,24 +24,30 @@ class DataList
   BAD_URI_PATH = '/lulz'
   ROOT_PATH = '/'
   MINIMUM_LIST_SIZE = 10
+  PRINT_EVERY_X = 10_000
+  RED_DOT = ColorizedString['.'].red.on_yellow
   COLUMNS = %i[id url referrer created_at digest].freeze
   attr_reader :urls, :size, :sample_entries, :first_date, :sequential_days
 
   class << self
     # returns an array of hashes
     # each hash will have keys like the attributes of SampleEntry
-    def seeder(size:, sequential_days:, first_date: nil)
+    def seeder(size:, sequential_days:, first_date: nil, print_every_x: PRINT_EVERY_X)
       top_domains = AlexaTopDomains.new(size: size)
+      puts "Entropy source is #{top_domains.domains.size} datapoints"
+      puts "Each '#{DataList::RED_DOT}' represents 10,000 page views prepared\n"
+      puts '.' * (1_000_000 / print_every_x) + ' 100%'
       new(
         urls: top_domains.domains,
         size: size,
         first_date: first_date,
-        sequential_days: sequential_days
+        sequential_days: sequential_days,
+        print_every_x: print_every_x
       )
     end
   end
 
-  def initialize(urls:, size:, first_date: nil, sequential_days: MINIMUM_LIST_SIZE)
+  def initialize(urls:, size:, first_date: nil, sequential_days: MINIMUM_LIST_SIZE, print_every_x: PRINT_EVERY_X)
     # Must be at least ten sequential days of data
     raise 'Minimum sequential_days is 10' unless sequential_days >= MINIMUM_LIST_SIZE
     raise "Minimum size is #{sequential_days} when sequential_days is #{sequential_days}" unless size >= sequential_days
@@ -50,7 +58,7 @@ class DataList
     @sample_entries = []
     @first_date = first_date || Time.now.beginning_of_day - sequential_days.days
     @sequential_days = sequential_days
-    fill_sample_entries
+    fill_sample_entries(print_every_x)
   end
 
   def each
@@ -63,7 +71,7 @@ class DataList
 
   private
 
-  def fill_sample_entries
+  def fill_sample_entries(print_every_x)
     must_have_referrers = REQUIRED_REFERRERS.dup
     must_have_urls = CORE_URLS.dup
     @urls.each_with_index do |top_url, index|
@@ -76,7 +84,12 @@ class DataList
         first_date: first_date,
         sequential_days: sequential_days
       )
+      progress(index, print_every_x)
     end
+  end
+
+  def progress(index, print_every_x)
+    print RED_DOT if index.modulo(print_every_x).zero?
   end
 
   def next_referrer!(must_have_referrers, visited_url)

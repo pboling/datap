@@ -21,21 +21,21 @@ data_list = nil
 bench('Building Entropy') do
   data_list = DataList.seeder(
     size: seed_size,
-    sequential_days: sequential_days
+    sequential_days: sequential_days,
+    print_every_x: slice_size
   )
 end
 
-red_dot = ColorizedString['.'].red.on_yellow
-
 bench("Importing #{seed_size} PageViews") do
-  puts "Each '#{red_dot}' represents 10,000 page views\n"
+  puts "Each '#{DataList::RED_DOT}' represents 10,000 page views\n"
+  puts '.' * (1_000_000 / slice_size) + ' 100%'
   data_list.each.each_slice(slice_size) do |list|
     PageView.import(
       DataList::COLUMNS,
       list,
       validate: false
     )
-    print red_dot
+    print DataList::RED_DOT
   end
   print "\n"
 end
