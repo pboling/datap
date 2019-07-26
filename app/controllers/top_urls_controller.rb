@@ -2,7 +2,6 @@
 
 class TopUrlsController < ApplicationController
   def index
-    top_urls = PageView.order(created_at: :desc)
-    render json: {}
+    render json: PageView.top_urls.as_json
   end
 end
