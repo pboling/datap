@@ -7,13 +7,14 @@ class TopTracker
   end
 
   def complete?(viewed_on)
+    return false unless @size
     self[viewed_on].length >= @size
   end
 
   def add_page_views(viewed_on, page_views_for_day)
     return self unless page_views_for_day.present?
 
-    list = ListFiller.new(page_views_for_day, size: @size).list
+    list = @size ? ListFiller.new(page_views_for_day, size: @size).list : page_views_for_day
     self[viewed_on].concat(list)
     self
   end
