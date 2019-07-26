@@ -53,9 +53,18 @@ class PageView < Sequel::Model
     # returns data in the format:
     #   { '2017-01-01' : [ { 'url': 'http://apple.com', 'visits': 100 } ] }
     def top_urls(days = 5)
-      by_visits_for_days(days).each do |page_views_for_day|
-        page_views_for_day.map(&:to_h)
+      # TODO: Rename TopTracker, as this use case no longer fits well.
+      recent_views = TopTracker.new(nil)
+      by_visits_for_days(days).each do |viewed_on, page_views_for_day|
+        recent_views.add_page_views(viewed_on, page_views_for_day.map(&:to_h))
+        # at this point top_10_urls_per_day is like
+        # {
+        #   '2019-07-16' => [ { 'url': 'http://apple.com', 'visits': 123 }, ... ],
+        #   '2019-07-17' => [ { 'url': 'http://www.apple.com', 'visits': 321 }, ... ],
+        #   ...
+        # }
       end
+      recent_views.to_h
     end
 
     # Your end-users should be able to retrieve the top 5 referrers for the top 10
