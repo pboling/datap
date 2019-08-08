@@ -12,12 +12,31 @@ AllCops:
     - config/skeleton/Dockerfile.ruby
     - node_modules/**/*
 
-Metrics/LineLength:
-  Max: 99
+Metrics/BlockLength:
+  ExcludedMethods:
+    - class_methods
+    - namespace
+    - context
+    - describe
+    - shared_examples
+    - shared_examples_for
+    - shared_context
+    - define
+    - factory
+    - include_context
+    - let
 
-RSpec/ImplicitSubject:
-  EnforcedStyle: single_statement_only
+Metrics/LineLength:
+  Max: 120
+  IgnoredPatterns:
+    - '(\A|\s)#'
+    - '\A\s{2,}scope'
 
 RSpec/ExampleWithoutDescription:
   EnforcedStyle: disallow
 
+RSpec/ImplicitSubject:
+  EnforcedStyle: single_statement_only
+
+RSpec/NestedGroups:
+  Max: 4
