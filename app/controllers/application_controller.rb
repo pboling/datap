@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Controller parent class, ideal for authentication, security checks, and other global request handling.
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 

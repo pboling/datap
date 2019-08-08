@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Wraps a customized internal @hash to facilitate building the set of top urls and top referrers
 class TopTracker
   delegate :[], :[]=, :keys, :merge, :empty?, :to_h, to: :@hash
 
