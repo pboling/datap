@@ -30,7 +30,7 @@ class SampleEntry
   def random_time_of_day(now)
     from = now.strftime('%Y-%m-%dT00:00:00%z')
     to = now.strftime('%Y-%m-%dT11:59:59%z')
-    rand(Time.parse(from)..Time.parse(to))
+    rand(Time.zone.parse(from)..Time.zone.parse(to))
   end
 
   def to_digest

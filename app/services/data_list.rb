@@ -56,7 +56,7 @@ class DataList
     @urls = ListFiller.new(urls.to_a, size: @size).list
     @non_core_referrers = ListEntropy.new(@urls.first(1000), size: 1000, max_entropy: 1000).list
     @sample_entries = []
-    @first_date = first_date || Time.now.beginning_of_day - sequential_days.days
+    @first_date = first_date || Time.zone.now.beginning_of_day - sequential_days.days
     @sequential_days = sequential_days
     fill_sample_entries(print_every_x)
   end

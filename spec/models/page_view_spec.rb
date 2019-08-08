@@ -2,16 +2,20 @@
 
 RSpec.describe PageView do
   let(:instance) { described_class.new }
+
   describe '#initialize' do
     subject { instance }
+
     it 'does not raise error' do
-      block_is_expected.to_not raise_error
+      block_is_expected.not_to raise_error
     end
   end
+
   describe '#top_urls' do
     subject { described_class.top_urls }
+
     it 'does not raise error' do
-      block_is_expected.to_not raise_error
+      block_is_expected.not_to raise_error
     end
     it 'returns an Hash' do
       is_expected.to be_a(Hash)
@@ -23,7 +27,7 @@ RSpec.describe PageView do
       #
       # Ensure  1,000,000 records!
       it 'is seeded' do
-        expect(PageView.count).to eq(1_000_000)
+        expect(described_class.count).to eq(1_000_000)
       end
       it 'is not empty' do
         is_expected.not_to be_empty
@@ -51,10 +55,12 @@ RSpec.describe PageView do
       end
     end
   end
+
   describe '#top_referrers' do
     subject { described_class.top_referrers }
+
     it 'does not raise error' do
-      block_is_expected.to_not raise_error
+      block_is_expected.not_to raise_error
     end
     it 'returns an Hash' do
       is_expected.to be_a(Hash)
@@ -66,7 +72,7 @@ RSpec.describe PageView do
       #
       # Ensure  1,000,000 records!
       it 'is seeded' do
-        expect(PageView.count).to eq(1_000_000)
+        expect(described_class.count).to eq(1_000_000)
       end
       it 'is not empty' do
         is_expected.not_to be_empty
@@ -98,6 +104,7 @@ RSpec.describe PageView do
           first_day = top.keys.first
           top[first_day][0][:referrers]
         end
+
         it 'is an array' do
           is_expected.to be_a(Array)
         end

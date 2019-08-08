@@ -1,0 +1,17 @@
+require:
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+  Exclude:
+    - Rakefile
+    - Guardfile
+    - bin/*
+    - config/skeleton/Dockerfile.ruby
+
+RSpec/ImplicitSubject:
+  EnforcedStyle: single_statement_only
+
+RSpec/ExampleWithoutDescription:
+  EnforcedStyle: disallow

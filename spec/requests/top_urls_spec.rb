@@ -6,6 +6,7 @@ RSpec.describe 'Top URLs', type: :request do
       'ACCEPT': 'application/json'
     }
   end
+
   it 'is successful' do
     get '/top_urls', headers: headers
 

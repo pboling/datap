@@ -15,7 +15,7 @@ class TopTracker
   end
 
   def add_page_views(viewed_on, page_views_for_day)
-    return self unless page_views_for_day.present?
+    return self if page_views_for_day.blank?
 
     list = @size ? ListFiller.new(page_views_for_day, size: @size).list : page_views_for_day
     self[viewed_on].concat(list)
