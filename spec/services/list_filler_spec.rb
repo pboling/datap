@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe ListFiller do
-  let(:list) do
+  subject(:instance) { described_class.new(input, size: size) }
+
+  let(:input) do
     %w[
       http://mars.com
       https://venus.com
@@ -10,55 +12,60 @@ RSpec.describe ListFiller do
     ]
   end
   let(:size) { 20 }
-  let(:instance) { described_class.new(list, size: size) }
 
   describe '#initialize' do
-    subject { instance }
-
     it 'does not raise' do
       block_is_expected.not_to raise_error
     end
 
     context 'with list smaller than size' do
+      subject(:list) { instance.list }
+
+      it 'is not empty' do
+        expect(list).not_to be_empty
+      end
       it 'fills to <size> entries' do
-        expect(instance.list).not_to be_empty
-        expect(instance.list.length).to eq(size)
+        expect(list.length).to eq(size)
       end
     end
 
     context 'with list larger than size' do
+      subject(:list) { instance.list }
+
       let(:size) { 3 }
 
+      it 'is not empty' do
+        expect(list).not_to be_empty
+      end
       it 'fills to <size> entries' do
-        expect(instance.list).not_to be_empty
-        expect(instance.list.length).to eq(size)
+        expect(list.length).to eq(size)
       end
     end
 
     context 'with size 149 (prime)' do
+      subject(:list) { instance.list }
+
       let(:size) { 149 }
 
+      it 'is not empty' do
+        expect(list).not_to be_empty
+      end
       it 'fills to <size> entries' do
-        expect(instance.list).not_to be_empty
-        expect(instance.list.length).to eq(size)
+        expect(list.length).to eq(size)
       end
     end
   end
 
   describe '#list' do
-    subject { instance.list }
+    subject(:list) { instance.list }
 
     let(:size) { 12 }
 
     it 'returns an Array' do
       is_expected.to be_an(Array)
     end
-    context 'length' do
-      subject { instance.list.length }
-
-      it 'is size' do
-        is_expected.to eq(size)
-      end
+    it 'has length' do
+      expect(list.length).to eq(size)
     end
   end
 end
