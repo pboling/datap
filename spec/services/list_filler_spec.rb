@@ -11,15 +11,28 @@ RSpec.describe ListFiller do
       http://neptune.com
     ]
   end
-  let(:size) { 20 }
+  let(:size) { input.length }
 
   describe '#initialize' do
     it 'does not raise' do
       block_is_expected.not_to raise_error
     end
 
+    context 'with list same size as input' do
+      subject(:list) { instance.list }
+
+      it 'is not empty' do
+        expect(list).not_to be_empty
+      end
+      it 'fills to <size> entries' do
+        expect(list.length).to eq(size)
+      end
+    end
+
     context 'with list smaller than size' do
       subject(:list) { instance.list }
+
+      let(:size) { input.length + 1 }
 
       it 'is not empty' do
         expect(list).not_to be_empty
@@ -32,7 +45,7 @@ RSpec.describe ListFiller do
     context 'with list larger than size' do
       subject(:list) { instance.list }
 
-      let(:size) { 3 }
+      let(:size) { input.length - 1 }
 
       it 'is not empty' do
         expect(list).not_to be_empty
