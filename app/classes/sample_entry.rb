@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Allows creation of the hash of attributes used to create a PageView record
+# Facilitates creating PageView records that are realistic looking
 class SampleEntry
   attr_reader :id, :url, :referrer, :created_at, :digest
   def initialize(url:, referrer:, index:, first_date:, sequential_days: 10)

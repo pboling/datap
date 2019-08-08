@@ -23,7 +23,7 @@ class TopTracker
     self
   end
 
-  def add_top_referrers(viewed_on, top_referrers, num_referrers)
+  def add_top_referrers(viewed_on, top_referrers, num_referrers) # rubocop:disable Metrics/AbcSize
     self[viewed_on].map! do |page_view|
       referrers = top_referrers[viewed_on].select { |pv| pv[:url] == page_view.url }
       refs = referrers.sort_by! { |pv| pv[:visits] }.reverse.first(num_referrers)
