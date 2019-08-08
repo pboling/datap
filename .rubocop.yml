@@ -12,8 +12,12 @@ AllCops:
     - config/skeleton/Dockerfile.ruby
     - node_modules/**/*
 
+Metrics/LineLength:
+  Max: 99
+
 RSpec/ImplicitSubject:
   EnforcedStyle: single_statement_only
 
 RSpec/ExampleWithoutDescription:
   EnforcedStyle: disallow
+
