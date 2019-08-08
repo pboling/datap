@@ -11,9 +11,9 @@ But why does it take so long?
 * These are used to build entropy, so that the dataset is real-ish for both:
   - urls being hit, and
   - referrers
-* Building this entropy takes 2-3 minutes, but
+* Building this entropy takes several minutes, but
   - having a data set that is realistic is helpful to notice bugs in data handling, especially with queries.
-* Importing the 1 million records tends to take around 60-90 seconds.
+* Importing the 1 million records tends to take around 60-120 seconds, depending on the speed of the computer.
 
 ## How to use this project
 
