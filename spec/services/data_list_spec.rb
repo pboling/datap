@@ -9,8 +9,9 @@ RSpec.describe DataList do
       http://neptune.com
     ]
   end
-  let(:size) { 20 }
-  let(:instance) { described_class.new(urls: urls, size: size) }
+  let(:sequential_days) { 10 }
+  let(:size) { sequential_days }
+  let(:instance) { described_class.new(urls: urls, size: size, sequential_days: sequential_days) }
 
   describe '#initialize' do
     subject { instance }
@@ -20,50 +21,83 @@ RSpec.describe DataList do
         block_is_expected.not_to raise_error
       end
     end
-
-    it 'fills to <size> entries' do
-      VCR.use_cassette('alexa_top_domains') do
-        expect(instance.sample_entries).not_to be_empty
-        expect(instance.sample_entries.length).to eq(size)
-      end
-    end
-
     it 'Entries are SampleEntry' do
       VCR.use_cassette('alexa_top_domains') do
         expect(instance.sample_entries.map(&:class).uniq).to eq [SampleEntry]
       end
     end
-    context 'with size 50' do
-      let(:size) { 50 }
 
+    context 'with size = sequential_days' do
+      subject(:sample_entries) { instance.sample_entries }
+
+      it 'is not empty' do
+        VCR.use_cassette('alexa_top_domains') do
+          expect(sample_entries).not_to be_empty
+        end
+      end
       it 'fills to <size> entries' do
         VCR.use_cassette('alexa_top_domains') do
-          expect(instance.sample_entries).not_to be_empty
-          expect(instance.sample_entries.length).to eq(size)
+          expect(sample_entries.length).to eq(size)
+        end
+      end
+    end
+
+    context 'with size > sequential_days' do
+      subject(:sample_entries) { instance.sample_entries }
+
+      let(:size) { sequential_days + 1 }
+
+      it 'is not empty' do
+        VCR.use_cassette('alexa_top_domains') do
+          expect(sample_entries).not_to be_empty
+        end
+      end
+      it 'fills to <size> entries' do
+        VCR.use_cassette('alexa_top_domains') do
+          expect(sample_entries.length).to eq(size)
+        end
+      end
+    end
+
+    context 'with size < sequential_days' do
+      subject(:sample_entries) { instance.sample_entries }
+
+      let(:size) { sequential_days - 1 }
+
+      it 'raises RuntimeError' do
+        VCR.use_cassette('alexa_top_domains') do
+          block_is_expected.to raise_error(RuntimeError, "Minimum size is #{sequential_days} when sequential_days is #{sequential_days}")
         end
       end
     end
 
     context 'with size 149 (prime)' do
+      subject(:sample_entries) { instance.sample_entries }
+
       let(:size) { 149 }
 
+      it 'is not empty' do
+        VCR.use_cassette('alexa_top_domains') do
+          expect(sample_entries).not_to be_empty
+        end
+      end
       it 'fills to <size> entries' do
         VCR.use_cassette('alexa_top_domains') do
-          expect(instance.sample_entries).not_to be_empty
-          expect(instance.sample_entries.length).to eq(size)
+          expect(sample_entries.length).to eq(size)
         end
       end
     end
   end
 
   describe '#each' do
-    subject { instance.each }
+    subject(:each) { instance.each }
 
     it 'returns an Enumerator' do
       is_expected.to be_an(Enumerator)
     end
+
     context 'converts to array' do
-      subject { instance.each.to_a.length }
+      subject { each.to_a.length }
 
       let(:size) { 12 }
 
@@ -82,12 +116,13 @@ RSpec.describe DataList do
     it 'returns an array' do
       is_expected.to be_an(described_class)
     end
-    context 'has <size> sample entries' do
+
+    context 'when size = 149' do
       subject { instance.sample_entries.length }
 
       let(:size) { 149 }
 
-      it 'is size' do
+      it 'has the same number of sample entries' do
         is_expected.to eq(size)
       end
     end
