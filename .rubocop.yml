@@ -4,13 +4,13 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRubyVersion: 2.6.3
   Exclude:
     - Rakefile
     - Guardfile
     - bin/*
     - config/skeleton/Dockerfile.ruby
     - node_modules/**/*
+  TargetRubyVersion: 2.6.3
 
 Metrics/BlockLength:
   ExcludedMethods:
@@ -27,10 +27,14 @@ Metrics/BlockLength:
     - let
 
 Metrics/LineLength:
-  Max: 120
   IgnoredPatterns:
     - '(\A|\s)#'
     - '\A\s{2,}scope'
+  Max: 120
+
+Rails/Output:
+  Exclude:
+    - db/seeds.rb
 
 RSpec/ExampleWithoutDescription:
   EnforcedStyle: disallow

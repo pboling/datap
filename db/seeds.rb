@@ -10,7 +10,7 @@ def bench(task_name)
   seconds = Benchmark.realtime do
     yield if block_given?
   end
-  puts "\n#{BENCHMARK_MARKER}-FINISH: #{ColorizedString[task_name].green.on_black} #{ColorizedString[format('%f', seconds)].yellow.on_black} seconds\n"
+  puts "\n#{BENCHMARK_MARKER}-FINISH: #{ColorizedString[task_name].green.on_black} #{ColorizedString[format('%<seconds>f', seconds)].yellow.on_black} seconds\n"
 end
 
 seed_size = ENV['SEED_SIZE'] ? ENV['SEED_SIZE'].to_i : 1_000_000

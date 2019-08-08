@@ -12,7 +12,7 @@ RSpec.describe PageView do
   end
 
   describe '#top_urls' do
-    subject { described_class.top_urls }
+    subject(:top_urls) { described_class.top_urls }
 
     it 'does not raise error' do
       block_is_expected.not_to raise_error
@@ -33,19 +33,20 @@ RSpec.describe PageView do
         is_expected.not_to be_empty
       end
       it 'has keys in the most visited site ' do
-        first_day = subject.keys[0]
-        expect(subject[first_day].first.keys).to eq(%i[url visits])
+        first_day = top_urls.keys[0]
+        expect(top_urls[first_day].first.keys).to eq(%i[url visits])
       end
+      # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
       it 'sequential dates' do
         # NOTE: The DB must be seeded every day, to keep the leading edge of the data fresh
         #       This test suite validates a "production prototype, so it has to be realistic"
         #       Timecop can't be used to fake it because the DB queries use magic:
         #         CURRENT_DATE - INTERVAL '#{days_ago} days'
-        first_day_result = Date.parse(subject.keys[0])
-        second_day_result = Date.parse(subject.keys[1])
-        third_day_result = Date.parse(subject.keys[2])
-        fourth_day_result = Date.parse(subject.keys[3])
-        last_day_result = Date.parse(subject.keys[-1]) # fifth is last!
+        first_day_result = Date.parse(top_urls.keys[0])
+        second_day_result = Date.parse(top_urls.keys[1])
+        third_day_result = Date.parse(top_urls.keys[2])
+        fourth_day_result = Date.parse(top_urls.keys[3])
+        last_day_result = Date.parse(top_urls.keys[-1]) # fifth is last!
 
         # Ensure 5 days of data
         expect(first_day_result - second_day_result).to eq(1)
@@ -53,11 +54,12 @@ RSpec.describe PageView do
         expect(first_day_result - fourth_day_result).to eq(3)
         expect(first_day_result - last_day_result).to eq(4)
       end
+      # rubocop:enable RSpec/MultipleExpectations, RSpec/ExampleLength
     end
   end
 
   describe '#top_referrers' do
-    subject { described_class.top_referrers }
+    subject(:top_referrers) { described_class.top_referrers }
 
     it 'does not raise error' do
       block_is_expected.not_to raise_error
@@ -78,19 +80,20 @@ RSpec.describe PageView do
         is_expected.not_to be_empty
       end
       it 'has keys in the most visited site ' do
-        first_day = subject.keys[0]
-        expect(subject[first_day].first.keys).to eq(%i[url visits referrers])
+        first_day = top_referrers.keys[0]
+        expect(top_referrers[first_day].first.keys).to eq(%i[url visits referrers])
       end
+      # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
       it 'sequential dates' do
         # NOTE: The DB must be seeded every day, to keep the leading edge of the data fresh
         #       This test suite validates a "production prototype, so it has to be realistic"
         #       Timecop can't be used to fake it because the DB queries use magic:
         #         CURRENT_DATE - INTERVAL '#{days_ago} days'
-        first_day_result = Date.parse(subject.keys[0])
-        second_day_result = Date.parse(subject.keys[1])
-        third_day_result = Date.parse(subject.keys[2])
-        fourth_day_result = Date.parse(subject.keys[3])
-        last_day_result = Date.parse(subject.keys[-1]) # fifth is last!
+        first_day_result = Date.parse(top_referrers.keys[0])
+        second_day_result = Date.parse(top_referrers.keys[1])
+        third_day_result = Date.parse(top_referrers.keys[2])
+        fourth_day_result = Date.parse(top_referrers.keys[3])
+        last_day_result = Date.parse(top_referrers.keys[-1]) # fifth is last!
 
         # Ensure 5 days of data
         expect(first_day_result - second_day_result).to eq(1)
@@ -98,8 +101,10 @@ RSpec.describe PageView do
         expect(first_day_result - fourth_day_result).to eq(3)
         expect(first_day_result - last_day_result).to eq(4)
       end
-      context 'referrers' do
-        subject do
+      # rubocop:enable RSpec/MultipleExpectations, RSpec/ExampleLength
+
+      describe 'referrers' do
+        subject(:referrers) do
           top = described_class.top_referrers
           first_day = top.keys.first
           top[first_day][0][:referrers]
@@ -112,10 +117,10 @@ RSpec.describe PageView do
           is_expected.not_to be_empty
         end
         it 'has keys' do
-          expect(subject.first.keys).to eq(%i[url visits])
+          expect(referrers.first.keys).to eq(%i[url visits])
         end
         it 'has positive visits' do
-          expect(subject.first[:visits]).to be_positive
+          expect(referrers.first[:visits]).to be_positive
         end
       end
     end
