@@ -7,12 +7,18 @@ RSpec.describe 'Top Referrers', type: :request do
     }
   end
 
-  it 'is successful' do
-    get '/top_referrers', headers: headers
+  it 'has content type of JSON' do
+    get '/top_urls', headers: headers
 
     expect(response.content_type).to eq('application/json')
+  end
+
+  it 'is successful' do
+    get '/top_urls', headers: headers
+
     expect(response).to have_http_status(:ok)
   end
+
   # NOTE: The DB must be seeded every day, to keep the leading edge of the data fresh
   #       This test suite validates a "production prototype, so it has to be realistic"
   #       Timecop can't be used to fake it because the DB queries use magic:
@@ -22,6 +28,7 @@ RSpec.describe 'Top Referrers', type: :request do
   #   RAILS_ENV=test bin/rake db:seed
   #   RAILS_ENV=test bin/rake db:reset
   #
+  # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
   it 'returns data' do
     get '/top_referrers', headers: headers
 
@@ -38,4 +45,5 @@ RSpec.describe 'Top Referrers', type: :request do
     expect(first_day_result - fourth_day_result).to eq(3)
     expect(first_day_result - last_day_result).to eq(4)
   end
+  # rubocop:enable RSpec/MultipleExpectations, RSpec/ExampleLength
 end
