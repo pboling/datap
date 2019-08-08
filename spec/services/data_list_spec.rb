@@ -96,12 +96,12 @@ RSpec.describe DataList do
       is_expected.to be_an(Enumerator)
     end
 
-    context 'converts to array' do
+    context 'when converted to array' do
       subject { each.to_a.length }
 
       let(:size) { 12 }
 
-      it 'is size' do
+      it 'has <size> members' do
         is_expected.to eq(size)
       end
     end
