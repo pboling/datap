@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Represents a browser rendering a page for a user.
+# Records the url visited, the referrer, a digest, and a timestamp
 class PageView < Sequel::Model
   TOP_URLS = lambda do |days_ago|
     <<~SQL

@@ -3,7 +3,7 @@
 require 'colorized_string'
 
 # We need a list of exactly one million entries
-class DataList
+class DataList # rubocop:disable Metrics/ClassLength
   CORE_REFERRERS = %w[
     http://apple.com
     https://apple.com
@@ -32,9 +32,11 @@ class DataList
   class << self
     # returns an array of hashes
     # each hash will have keys like the attributes of SampleEntry
+    #
+    # rubocop:disable Rails/Output, Metrics/MethodLength
     def seeder(size:, sequential_days:, first_date: nil, print_every_x: PRINT_EVERY_X)
       top_domains = AlexaTopDomains.new(size: size)
-      puts "Entropy source is #{top_domains.domains.size} datapoints"
+      puts "Entropy source is #{top_domains.domains.size} data points"
       puts "Each '#{DataList::RED_DOT}' represents 10,000 page views prepared\n"
       puts '.' * (1_000_000 / print_every_x) + ' 100%'
       new(
@@ -45,9 +47,10 @@ class DataList
         print_every_x: print_every_x
       )
     end
+    # rubocop:enable Rails/Output, Metrics/MethodLength
   end
 
-  def initialize(urls:, size:, first_date: nil, sequential_days: MINIMUM_LIST_SIZE, print_every_x: PRINT_EVERY_X)
+  def initialize(urls:, size:, first_date: nil, sequential_days: MINIMUM_LIST_SIZE, print_every_x: PRINT_EVERY_X) # rubocop:disable Metrics/AbcSize
     # Must be at least ten sequential days of data
     raise 'Minimum sequential_days is 10' unless sequential_days >= MINIMUM_LIST_SIZE
     raise "Minimum size is #{sequential_days} when sequential_days is #{sequential_days}" unless size >= sequential_days
@@ -75,35 +78,38 @@ class DataList
     must_have_referrers = REQUIRED_REFERRERS.dup
     must_have_urls = CORE_URLS.dup
     @urls.each_with_index do |top_url, index|
-      visited_url = next_url!(must_have_urls, top_url)
-      referrer = next_referrer!(must_have_referrers, visited_url)
-      @sample_entries << SampleEntry.new(
-        url: visited_url,
-        referrer: referrer,
-        index: index,
-        first_date: first_date,
-        sequential_days: sequential_days
-      )
-      progress(index, print_every_x)
+      add_sample_entry!(must_have_urls, must_have_referrers, top_url, index, print_every_x)
     end
   end
 
+  def add_sample_entry!(must_have_urls, must_have_referrers, top_url, index, print_every_x)
+    visited_url = next_url!(must_have_urls, top_url)
+    referrer = next_referrer!(must_have_referrers, visited_url)
+    @sample_entries << SampleEntry.new(
+      url: visited_url,
+      referrer: referrer,
+      index: index,
+      first_date: first_date,
+      sequential_days: sequential_days
+    )
+    progress(index, print_every_x)
+  end
+
   def progress(index, print_every_x)
-    print RED_DOT if index.modulo(print_every_x).zero?
+    print RED_DOT if index.modulo(print_every_x).zero? # rubocop:disable Rails/Output
   end
 
   def next_referrer!(must_have_referrers, visited_url)
     must_have = must_have_referrers.shift
     return nil if must_have == visited_url
     return must_have if must_have
-    return nil unless has_referrer?
+    return nil unless decide_if_has_referrer?
 
-    if own_referrer?
-      referrer = CORE_REFERRERS.sample
-    else
-      scheme = secure_scheme? ? 'https' : 'http'
-      referrer = "#{scheme}://#{@non_core_referrers.sample}"
-    end
+    referrer = if decide_if_own_referrer?
+                 CORE_REFERRERS.sample
+               else
+                 "#{random_scheme}://#{@non_core_referrers.sample}"
+               end
     return referrer unless referrer == visited_url
   end
 
@@ -112,7 +118,7 @@ class DataList
     return top_url if must_have == top_url
     return must_have if must_have
 
-    return CORE_URLS.sample if hit_core_domain_at_root?
+    return CORE_URLS.sample if decide_if_hit_core_domain_at_root?
 
     "#{CORE_URLS.sample}#{faux_path(top_url)}"
   end
@@ -121,8 +127,7 @@ class DataList
   def faux_path(url)
     return ROOT_PATH unless url
 
-    scheme = secure_scheme? ? 'https' : 'http'
-    uri = Addressable::URI.parse("#{scheme}://#{url}")
+    uri = Addressable::URI.parse("#{random_scheme}://#{url}")
     return BAD_URI_PATH unless uri
 
     hostname = uri.hostname.try(:gsub, '.', '/')
@@ -130,22 +135,26 @@ class DataList
     hostname || ERROR_PATH
   end
 
-  def secure_scheme?
+  def random_scheme
+    decide_if_secure_scheme? ? 'https' : 'http'
+  end
+
+  def decide_if_secure_scheme?
     rand(10) < 6
   end
 
   # A plurality of referrers should be from the same domain
-  def own_referrer?
+  def decide_if_own_referrer?
     rand(10) < 5
   end
 
   # A majority of entries should have referrers
-  def has_referrer?
+  def decide_if_has_referrer?
     rand(10) > 2
   end
 
   # A plurality of entries should be for root core domain
-  def hit_core_domain_at_root?
+  def decide_if_hit_core_domain_at_root?
     rand(10) < 4
   end
 end

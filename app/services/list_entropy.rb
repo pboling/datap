@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Create a list, from a supplied base list, with exactly the specified size
+# Entropy reduction will result in more repetition from the base list, and will not use the entire base list
 class ListEntropy < ListFiller
   MAXIMUM_ENTROPY = 10_000
   ENTROPY_FACTOR = 10

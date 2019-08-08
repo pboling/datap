@@ -3,6 +3,7 @@
 require 'open-uri'
 require 'zip'
 
+# Download, unzip, & save the top ~1MM Alexa-ranked domains, as delineated text file, with roughly 1MM entries
 class AlexaTopDomains
   URL = 'http://s3.amazonaws.com/alexa-static/top-1m.csv.zip'
   FILEPATH = 'db/data/domains.txt'

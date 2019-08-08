@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Create a list, from a supplied base list, with exactly the specified size
 class ListFiller
   attr_reader :list
 
@@ -26,11 +27,10 @@ class ListFiller
     when -1 # LT0, i.e. there is too much entropy
       reduce(-reduction)
     when 0 # EQ0
-      # noop
+      nil # noop
     when 1 # GT0, i.e. there are not enough
       fill(by)
-    else
-      raise 'Unexpected Comparison'
+    else raise 'Unexpected Comparison'
     end
   end
 
