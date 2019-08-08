@@ -14,7 +14,7 @@ RSpec.describe 'Top URLs', type: :request do
     expect(response).to have_http_status(:ok)
   end
   # NOTE: The DB must be seeded every day, to keep the leading edge of the data fresh
-  #       This test suite validates a "production prototype, so it has to be realistic"
+  #       This test suite validates a "production prototype", so it has to be "realistic"
   #       Timecop can't be used to fake it because the DB queries use magic:
   #         CURRENT_DATE - INTERVAL '#{days_ago} days'
   #

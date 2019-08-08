@@ -31,4 +31,14 @@ bundle exec rspec
 * Use [overmind][] to launch your processes in development. You just need to run
   - `overmind s -f Procfile.dev`
 
+## NOTE
+
+The DB must be seeded every day, to keep the leading edge of the data fresh.
+This test suite validates a "production prototype", so it has to be "realistic".
+Timecop can't be used to fake it because the DB queries use SQL magic like this:
+
+```sql
+CURRENT_DATE - INTERVAL '#{days_ago} days'
+```
+
 [overmind]: https://github.com/DarthSim/overmind
