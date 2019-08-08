@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class ListFiller
   attr_reader :list
 
   def initialize(list, size:, **_args)
-    raise ArgumentError, "size must be an Integer" unless size.is_a?(Integer)
+    raise ArgumentError, 'size must be an Integer' unless size.is_a?(Integer)
 
     @target_size = size
     @list = list.dup

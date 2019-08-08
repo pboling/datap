@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe PageView do
   let(:instance) { described_class.new }
   describe '#initialize' do
@@ -28,7 +30,7 @@ RSpec.describe PageView do
       end
       it 'has keys in the most visited site ' do
         first_day = subject.keys[0]
-        expect(subject[first_day].first.keys).to eq([:url, :visits])
+        expect(subject[first_day].first.keys).to eq(%i[url visits])
       end
       it 'sequential dates' do
         # NOTE: The DB must be seeded every day, to keep the leading edge of the data fresh
@@ -71,7 +73,7 @@ RSpec.describe PageView do
       end
       it 'has keys in the most visited site ' do
         first_day = subject.keys[0]
-        expect(subject[first_day].first.keys).to eq([:url, :visits, :referrers])
+        expect(subject[first_day].first.keys).to eq(%i[url visits referrers])
       end
       it 'sequential dates' do
         # NOTE: The DB must be seeded every day, to keep the leading edge of the data fresh
@@ -103,7 +105,7 @@ RSpec.describe PageView do
           is_expected.not_to be_empty
         end
         it 'has keys' do
-          expect(subject.first.keys).to eq([:url, :visits])
+          expect(subject.first.keys).to eq(%i[url visits])
         end
         it 'has positive visits' do
           expect(subject.first[:visits]).to be_positive

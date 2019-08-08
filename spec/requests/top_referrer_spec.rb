@@ -1,13 +1,15 @@
-RSpec.describe "Top Referrers", :type => :request do
+# frozen_string_literal: true
+
+RSpec.describe 'Top Referrers', type: :request do
   let(:headers) do
     {
-        'ACCEPT': 'application/json'
+      'ACCEPT': 'application/json'
     }
   end
-  it "is successful" do
-    get "/top_referrers", headers: headers
+  it 'is successful' do
+    get '/top_referrers', headers: headers
 
-    expect(response.content_type).to eq("application/json")
+    expect(response.content_type).to eq('application/json')
     expect(response).to have_http_status(:ok)
   end
   # NOTE: The DB must be seeded every day, to keep the leading edge of the data fresh
@@ -19,8 +21,8 @@ RSpec.describe "Top Referrers", :type => :request do
   #   RAILS_ENV=test bin/rake db:seed
   #   RAILS_ENV=test bin/rake db:reset
   #
-  it "returns data" do
-    get "/top_referrers", headers: headers
+  it 'returns data' do
+    get '/top_referrers', headers: headers
 
     json = JSON.parse(response.body)
     first_day_result = Date.parse(json.keys[0])

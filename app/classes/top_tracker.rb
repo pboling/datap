@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TopTracker
   delegate :[], :[]=, :keys, :merge, :empty?, :to_h, to: :@hash
 
@@ -8,6 +10,7 @@ class TopTracker
 
   def complete?(viewed_on)
     return false unless @size
+
     self[viewed_on].length >= @size
   end
 
@@ -24,7 +27,7 @@ class TopTracker
       referrers = top_referrers[viewed_on].select { |pv| pv[:url] == page_view.url }
       refs = referrers.sort_by! { |pv| pv[:visits] }.reverse.first(num_referrers)
       page_view.to_h.merge(
-          referrers: refs.map { |pv| { url: pv[:referrer], visits: pv[:visits] } }
+        referrers: refs.map { |pv| { url: pv[:referrer], visits: pv[:visits] } }
       )
     end
     self

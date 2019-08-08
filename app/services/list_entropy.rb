@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ListEntropy < ListFiller
   MAXIMUM_ENTROPY = 10_000
   ENTROPY_FACTOR = 10
@@ -19,9 +21,7 @@ class ListEntropy < ListFiller
 
   def reduced_entropy
     reduced = @target_size
-    while too_much_entropy?(reduced)
-      reduced = reduced / entropy_factor
-    end
+    reduced /= entropy_factor while too_much_entropy?(reduced)
     reduced
   end
 

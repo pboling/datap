@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PageView < Sequel::Model
-  TOP_URLS = -> (days_ago) do
+  TOP_URLS = lambda do |days_ago|
     <<~SQL
       SELECT
         "page_views"."url" AS url
@@ -25,7 +25,7 @@ class PageView < Sequel::Model
   # 1. Attempt to move the 5 days filter into the inner select
   # 2. Attempt a partition window over the group
   # 3. Attempt a lateral self join
-  TOP_REFERRERS = -> (days_ago) do
+  TOP_REFERRERS = lambda do |days_ago|
     <<~SQL
       SELECT * FROM (
         SELECT
@@ -34,7 +34,7 @@ class PageView < Sequel::Model
           , created_at::date as viewed_on
           , COUNT(*) as visits
         FROM page_views
-        GROUP BY 
+        GROUP BY
           url
           , referrer
           , created_at::date
@@ -98,7 +98,7 @@ class PageView < Sequel::Model
       top_10_urls_per_day.to_h
     end
 
-    def by_visits_for_days(days, &block)
+    def by_visits_for_days(days)
       grouped = top_urls_by_viewed_on(days)
       return grouped unless block_given?
 
